@@ -9,19 +9,20 @@
    
   jr.map = function (obj, callback) {
     return obj.reduce(function (previousValue, currentValue) {
-      return previousValue.push(callback(currentValue));
+      previousValue.push(callback(currentValue));
+      return previousValue;
     }, []);
   };
    
   jr.forEach = function (obj, callback) {
     return obj.reduce(function (previousValue, currentValue){
       callback(currentValue);
-    });
+    }, {});
   };
    
   jr.filter = function (obj, callback) {
     return obj.reduce(function (previousValue, currentValue) {
-      callback(currentValue) || previousValue.push(currentValue);
+      !callback(currentValue) || previousValue.push(currentValue);
       return previousValue;
     }, []);
   };
