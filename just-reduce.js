@@ -1,4 +1,4 @@
-function () {
+(function () {
   var root = this;
   
   var jr = function () {};
@@ -21,7 +21,7 @@ function () {
    
   jr.filter = function (obj, callback) {
     return obj.reduce(function (previousValue, currentValue) {
-      callback(currentValue)) || previousValue.push(currentValue);
+      callback(currentValue) || previousValue.push(currentValue);
       return previousValue;
     }, []);
   };
@@ -89,4 +89,4 @@ function () {
   }
   
   root.jr = jr;
-}.call(this);
+}).call(this);
