@@ -47,7 +47,7 @@
    
   jr.rest = function (obj) {
     return obj.reduce(function (previousValue, currentValue, index) {
-      index || previousValue.push(currentValue);
+      !index || previousValue.push(currentValue);
       return previousValue;
     }, []);
   };
@@ -55,13 +55,14 @@
   jr.partition = function(obj, predicate) {
     return obj.reduce(function (previousValue, currentValue) {
       (predicate(currentValue) ? previousValue[0] : previousValue[1]).push(currentValue);
+      return previousValue;
     }, [[],[]]);
   };
    
   jr.groupBy = function(obj, callback) {
     return obj.reduce(function (previousValue, currentValue) {
-      var result = typeof obj == 'function' ? callback(currentValue) : currentValue[callback];
-      previousValue[result] ? previousValue[result].push(currentValue) : previousValue[result] = [ currentValue ];
+      var result = typeof callback == 'function' ? callback(currentValue) : currentValue[callback];
+      previousValue[result] ? previousValue[result].push(currentValue) : (previousValue[result] = [ currentValue ]);
       return previousValue;
     }, {});
   };
@@ -82,7 +83,7 @@
     }, []);
   }
    
-  jr.reduceRight = function(obj, callback, iniitialValue) {
+  jr.reduceRight = function(obj, callback, initialValue) {
     return obj.reduce(function (previousValue, currentValue) {
       previousValue.unshift(currentValue);
       return previousValue;
