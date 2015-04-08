@@ -14,9 +14,9 @@
     }, []);
   };
    
-  jr.forEach = jr.each = function (obj, callback) {
+  jr.forEach = jr.each = function (obj, callback, context) {
     return obj.reduce(function (previousValue, currentValue){
-      callback(currentValue);
+      callback.call(context, currentValue);
     }, {});
   };
    
