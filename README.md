@@ -15,6 +15,7 @@ The objectives is to, first, clearly demonstrate the flexibility of [`Array.prot
 - reduce
 - reduceRight
 - map
+- forEach
 - filter
 - some
 - all
