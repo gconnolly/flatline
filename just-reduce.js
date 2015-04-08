@@ -3,49 +3,49 @@
   
   var jr = function () {};
   
-  jr.reduce = function (obj, callback, initialValue, context) {
+  jr.reduce = jr.foldl = jr.inject = function (obj, callback, initialValue, context) {
     return obj.reduce(callback.bind(context), initialValue);
   };
    
-  jr.map = function (obj, callback, context) {
+  jr.map = jr.collect = function (obj, callback, context) {
     return obj.reduce(function (previousValue, currentValue) {
       previousValue.splice(previousValue.length, 0, callback.call(context, currentValue));
       return previousValue;
     }, []);
   };
    
-  jr.forEach = function (obj, callback) {
+  jr.forEach = jr.each = function (obj, callback) {
     return obj.reduce(function (previousValue, currentValue){
       callback(currentValue);
     }, {});
   };
    
-  jr.filter = function (obj, callback, context) {
+  jr.filter = jr.select = function (obj, callback, context) {
     return obj.reduce(function (previousValue, currentValue) {
       !callback.call(context, currentValue) || previousValue.splice( previousValue.length, 0, currentValue );
       return previousValue;
     }, []);
   };
    
-  jr.some = function (obj, callback, context) {
+  jr.some = jr.any = function (obj, callback, context) {
     return obj.reduce(function (previousValue, currentValue) {
       return previousValue || callback.call(context, currentValue);
     }, false);
   };
    
-  jr.all = function (obj, callback, context) {
+  jr.all = jr.every = function (obj, callback, context) {
     return obj.reduce(function (previousValue, currentValue) {
       return previousValue && callback.call(context, currentValue);
     }, true);
   };
    
-  jr.first = function (obj) {
+  jr.first = jr.head = jr.take = function (obj) {
     return obj.reduce(function (previousValue, currentValue, index) {
       return index ? previousValue : currentValue;
     });
   };
    
-  jr.rest = function (obj) {
+  jr.rest = jr.tail = jr.drop = function (obj) {
     return obj.reduce(function (previousValue, currentValue, index) {
       !index || previousValue.splice(previousValue.length, 0, currentValue );
       return previousValue;

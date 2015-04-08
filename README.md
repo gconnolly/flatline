@@ -12,15 +12,15 @@ The objectives is to, first, clearly demonstrate the flexibility of [`Array.prot
 
 ### currently supported functions:
 
-- reduce
-- reduceRight
-- map
-- forEach
-- filter
-- some
-- all
-- first
-- rest
+- reduce, foldl, inject 
+- reduceRight, foldr
+- map, collect
+- forEach, each
+- filter, select
+- some, any
+- all, every
+- first, head, take
+- rest, tail, drop
 - groupBy
 - partition
 - flatten
