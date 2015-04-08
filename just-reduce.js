@@ -3,13 +3,13 @@
   
   var jr = function () {};
   
-  jr.reduce = function (obj, callback, initialValue) {
-    return obj.reduce(callback, initialValue);
+  jr.reduce = function (obj, callback, initialValue, context) {
+    return obj.reduce(callback.bind(context), initialValue);
   };
    
-  jr.map = function (obj, callback) {
+  jr.map = function (obj, callback, context) {
     return obj.reduce(function (previousValue, currentValue) {
-      previousValue.push(callback(currentValue));
+      previousValue.splice(previousValue.length, 0, callback.call(context, currentValue));
       return previousValue;
     }, []);
   };
@@ -20,22 +20,22 @@
     }, {});
   };
    
-  jr.filter = function (obj, callback) {
+  jr.filter = function (obj, callback, context) {
     return obj.reduce(function (previousValue, currentValue) {
-      !callback(currentValue) || previousValue.push(currentValue);
+      !callback.call(context, currentValue) || previousValue.splice( previousValue.length, 0, currentValue );
       return previousValue;
     }, []);
   };
    
-  jr.some = function (obj, callback) {
+  jr.some = function (obj, callback, context) {
     return obj.reduce(function (previousValue, currentValue) {
-      return previousValue || callback(currentValue);
+      return previousValue || callback.call(context, currentValue);
     }, false);
   };
    
-  jr.all = function (obj, callback) {
+  jr.all = function (obj, callback, context) {
     return obj.reduce(function (previousValue, currentValue) {
-      return previousValue && callback(currentValue);
+      return previousValue && callback.call(context, currentValue);
     }, true);
   };
    
@@ -47,47 +47,69 @@
    
   jr.rest = function (obj) {
     return obj.reduce(function (previousValue, currentValue, index) {
-      !index || previousValue.push(currentValue);
+      !index || previousValue.splice(previousValue.length, 0, currentValue );
       return previousValue;
     }, []);
   };
    
-  jr.partition = function(obj, predicate) {
+  jr.partition = function(obj, predicate, context) {
     return obj.reduce(function (previousValue, currentValue) {
-      (predicate(currentValue) ? previousValue[0] : previousValue[1]).push(currentValue);
+      (predicate.call(context, currentValue) 
+        ? previousValue[0] 
+        : previousValue[1]).splice(previousValue.length, 0, currentValue );
       return previousValue;
     }, [[],[]]);
   };
    
-  jr.groupBy = function(obj, callback) {
+  jr.groupBy = function(obj, callback, context) {
     return obj.reduce(function (previousValue, currentValue) {
-      var result = typeof callback == 'function' ? callback(currentValue) : currentValue[callback];
-      previousValue[result] ? previousValue[result].push(currentValue) : (previousValue[result] = [ currentValue ]);
+      var result = typeof callback == 'function' 
+            ? callback.call(context, currentValue) 
+            : currentValue[callback];
+
+      previousValue[result] 
+        ? previousValue[result].splice(previousValue[result].length, 0, currentValue )
+        : (previousValue[result] = [ currentValue ]);
       return previousValue;
     }, {});
   };
-   
-  jr.flatten = function(obj) {
-    return obj.reduce(function (outerPreviousValue, outerCurrentValue) {
-      return outerCurrentValue.reduce(function (innerPreviousValue, innerCurrentValue) {
-        innerPreviousValue.push(innerCurrentValue);
-        return innerPreviousValue;
-      }, outerPreviousValue);
-    }, []);
-  }
+  
+  jr.flatten = function (obj, shallow) {
+    return flatten([], obj, shallow);
+  };
    
   jr.reverse = function(obj) {
     return obj.reduce(function (previousValue, currentValue) {
-      previousValue.unshift(currentValue);
+      previousValue.splice(0, 0, currentValue);
       return previousValue;
     }, []);
-  }
+  };
    
-  jr.reduceRight = function(obj, callback, initialValue) {
+  jr.reduceRight = function(obj, callback, initialValue, context) {
     return obj.reduce(function (previousValue, currentValue) {
-      previousValue.unshift(currentValue);
+      previousValue.splice(0, 0, currentValue);
       return previousValue;
-    }, []).reduce(callback, initialValue);
+    }, []).reduce(callback.bind(context), initialValue);
+  };
+
+  /* Implementation */
+
+  function flatten(result, obj, shallow, recursive) {
+    return obj.reduce(function (outerPreviousValue, outerCurrentValue) {
+      isArrayLike(outerCurrentValue) && (!shallow || !recursive)
+        ? flatten(outerPreviousValue, outerCurrentValue, shallow, true) 
+        : outerPreviousValue.splice( outerPreviousValue.length, 0, outerCurrentValue );
+
+      return outerPreviousValue;
+    }, result);
+  }
+
+  function isArrayLike(obj) {
+    return obj 
+          && typeof obj.reduce == 'function'
+          && typeof obj.splice == 'function' 
+          && typeof obj.length == 'number' 
+          && obj.length >= 0;
   }
   
   root.jr = jr;
