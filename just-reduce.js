@@ -1,58 +1,65 @@
 (function () {
   var root = this;
   
-  var jr = function () {};
+  var _ = function () {};
   
-  jr.reduce = jr.foldl = jr.inject = function (obj, callback, initialValue, context) {
+  _.reduce = _.foldl = _.inject = function (obj, callback, initialValue, context) {
     return obj.reduce(callback.bind(context), initialValue);
   };
    
-  jr.map = jr.collect = function (obj, callback, context) {
+  _.map = _.collect = function (obj, callback, context) {
     return obj.reduce(function (previousValue, currentValue) {
       previousValue.splice(previousValue.length, 0, callback.call(context, currentValue));
       return previousValue;
     }, []);
   };
    
-  jr.forEach = jr.each = function (obj, callback, context) {
+  _.forEach = _.each = function (obj, callback, context) {
     return obj.reduce(function (previousValue, currentValue){
       callback.call(context, currentValue);
     }, {});
   };
+
+  _.invoke = function (obj, method, args) {
+    return obj.reduce(function (previousValue, currentValue){
+      previousValue.splice( previousValue.length, 0, currentValue[method].apply(currentValue, args) );
+      return previousValue;
+    }, []);
+  };  
    
-  jr.filter = jr.select = function (obj, callback, context) {
+  _.filter = _.select = function (obj, callback, context) {
     return obj.reduce(function (previousValue, currentValue) {
       !callback.call(context, currentValue) || previousValue.splice( previousValue.length, 0, currentValue );
       return previousValue;
     }, []);
   };
    
-  jr.some = jr.any = function (obj, callback, context) {
+  _.some = _.any = function (obj, callback, context) {
     return obj.reduce(function (previousValue, currentValue) {
       return previousValue || callback.call(context, currentValue);
     }, false);
   };
    
-  jr.all = jr.every = function (obj, callback, context) {
+  _.all = _.every = function (obj, callback, context) {
     return obj.reduce(function (previousValue, currentValue) {
       return previousValue && callback.call(context, currentValue);
     }, true);
   };
    
-  jr.first = jr.head = jr.take = function (obj) {
+  _.first = _.head = _.take = function (obj) {
     return obj.reduce(function (previousValue, currentValue, index) {
       return index ? previousValue : currentValue;
     });
   };
    
-  jr.rest = jr.tail = jr.drop = function (obj) {
+  _.rest = _.tail = _.drop = function (obj) {
     return obj.reduce(function (previousValue, currentValue, index) {
       !index || previousValue.splice(previousValue.length, 0, currentValue );
       return previousValue;
     }, []);
   };
    
-  jr.partition = function(obj, predicate, context) {
+  _.partition = function(obj, predicate, context) {
     return obj.reduce(function (previousValue, currentValue) {
       (predicate.call(context, currentValue) 
         ? previousValue[0] 
@@ -61,7 +68,7 @@
     }, [[],[]]);
   };
    
-  jr.groupBy = function(obj, callback, context) {
+  _.groupBy = function(obj, callback, context) {
     return obj.reduce(function (previousValue, currentValue) {
       var result = typeof callback == 'function' 
             ? callback.call(context, currentValue) 
@@ -74,25 +81,25 @@
     }, {});
   };
   
-  jr.flatten = function (obj, shallow) {
+  _.flatten = function (obj, shallow) {
     return flatten([], obj, shallow);
   };
    
-  jr.reverse = function(obj) {
+  _.reverse = function(obj) {
     return obj.reduce(function (previousValue, currentValue) {
       previousValue.splice(0, 0, currentValue);
       return previousValue;
     }, []);
   };
    
-  jr.reduceRight = function(obj, callback, initialValue, context) {
+  _.reduceRight = function(obj, callback, initialValue, context) {
     return obj.reduce(function (previousValue, currentValue) {
       previousValue.splice(0, 0, currentValue);
       return previousValue;
     }, []).reduce(callback.bind(context), initialValue);
   };
 
-  jr.min = function (obj, callback, context) {
+  _.min = function (obj, callback, context) {
     return obj.reduce(function (previousValue, currentValue, index) {
       var challenger = callback.call(context, currentValue),
           currentMin = index != 1 ? previousValue : callback.call(context, previousValue);
@@ -101,13 +108,23 @@
     });
   };
 
-  jr.max = function (obj, callback, context) {
+  _.max = function (obj, callback, context) {
     return obj.reduce(function (previousValue, currentValue, index) {
       var challenger = callback.call(context, currentValue),
           currentMin = index != 1 ? previousValue : callback.call(context, previousValue);
 
       return previousValue > challenger ? previousValue : challenger;
     });
+  };
+
+  _.slice = function (obj, begin, end) {
+    return obj.reduce(function (previousValue, currentValue, index) {
+      if((index >= (begin || 0)) && (index < end || obj.length)) {
+        previousValue.splice( previousValue.length, 0, currentValue );
+      }
+
+      return previousValue;
+    }, []);
   };
 
   /* Implementation */
@@ -130,5 +147,5 @@
           && obj.length >= 0;
   }
   
-  root.jr = jr;
+  root._ = _;
 }).call(this);

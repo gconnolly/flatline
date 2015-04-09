@@ -1,4 +1,4 @@
-# just-reduce.js
+# flatLine.js
 
 An experimental functional library written in javascript that operates on array-like objects requiring only the limited interface:
 ```javascript
