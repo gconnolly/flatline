@@ -92,6 +92,24 @@
     }, []).reduce(callback.bind(context), initialValue);
   };
 
+  jr.min = function (obj, callback, context) {
+    return obj.reduce(function (previousValue, currentValue, index) {
+      var challenger = callback.call(context, currentValue),
+          currentMin = index != 1 ? previousValue : callback.call(context, previousValue);
+
+      return currentMin < challenger ? currentMin : challenger;
+    });
+  };
+
+  jr.max = function (obj, callback, context) {
+    return obj.reduce(function (previousValue, currentValue, index) {
+      var challenger = callback.call(context, currentValue),
+          currentMin = index != 1 ? previousValue : callback.call(context, previousValue);
+
+      return previousValue > challenger ? previousValue : challenger;
+    });
+  };
+
   /* Implementation */
 
   function flatten(result, obj, shallow, recursive) {

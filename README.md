@@ -25,3 +25,5 @@ The objectives is to, first, clearly demonstrate the flexibility of [`Array.prot
 - partition
 - flatten
 - reverse
+- min
+- max
