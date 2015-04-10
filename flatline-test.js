@@ -61,6 +61,15 @@
         actual = _.filter([1, 2, 3], function (i) { return i > this.val;}, context);
 
     assert.deepEqual(actual, expected);
+  });
+
+  QUnit.module('compact');
+
+  QUnit.test( 'compact', function( assert ) {
+    var expected = [2, 3],
+        actual = _.compact([null, 2, undefined, 3, 0]);
+
+    assert.deepEqual(actual, expected);
   });  
 
   QUnit.module('some');
@@ -171,13 +180,44 @@
     assert.deepEqual(actual, expected);
   });
 
-
   QUnit.test( 'property', function( assert ) {
     var expected = { red: [{ color: 'red' }, { color: 'red' }], blue: [{ color: 'blue' }] },
         actual = _.groupBy([{ color: 'red' }, { color: 'red' }, { color: 'blue' }], 'color');
 
     assert.deepEqual(actual, expected);
-  }); 
+  });   
+
+  QUnit.module('countBy');
+
+  QUnit.test( 'function', function( assert ) {
+    var expected = { red: 2, blue: 1 },
+        actual = _.countBy([{ color: 'red' }, { color: 'red' }, { color: 'blue' }], function (i) { return i.color; });
+
+    assert.deepEqual(actual, expected);
+  });
+
+  QUnit.test( 'property', function( assert ) {
+    var expected = { red: 2, blue: 1 },
+        actual = _.countBy([{ color: 'red' }, { color: 'red' }, { color: 'blue' }], 'color');
+
+    assert.deepEqual(actual, expected);
+  });  
+
+  QUnit.module('indexBy');
+
+  QUnit.test( 'function', function( assert ) {
+    var expected = { red: { color: 'red' }, blue: { color: 'blue' }, orange: { color: 'orange' } },
+        actual = _.indexBy([{ color: 'orange' }, { color: 'red' }, { color: 'blue' }], function (i) { return i.color; });
+
+    assert.deepEqual(actual, expected);
+  });
+
+  QUnit.test( 'property', function( assert ) {
+    var expected = { red: { color: 'red' }, blue: { color: 'blue' }, orange: { color: 'orange' } },
+        actual = _.indexBy([{ color: 'orange' }, { color: 'red' }, { color: 'blue' }], 'color');
+
+    assert.deepEqual(actual, expected);
+  });  
 
   QUnit.module('flatten');
 
@@ -230,42 +270,42 @@
 
   QUnit.test( 'min 1 2 3', function( assert ) {
     var expected = 1,
-        actual = _.min([1, 2, 3], identity);
+        actual = _.min([1, 2, 3], _.identity);
 
     assert.deepEqual(actual, expected);
   });
 
   QUnit.test( 'min 1 3 2', function( assert ) {
     var expected = 1,
-        actual = _.min([1, 3, 2], identity);
+        actual = _.min([1, 3, 2], _.identity);
 
     assert.deepEqual(actual, expected);
   });
 
   QUnit.test( 'min 2 3 1', function( assert ) {
     var expected = 1,
-        actual = _.min([2, 3, 1], identity);
+        actual = _.min([2, 3, 1], _.identity);
 
     assert.deepEqual(actual, expected);
   });
 
   QUnit.test( 'min 2 1 3', function( assert ) {
     var expected = 1,
-        actual = _.min([2, 1, 3], identity);
+        actual = _.min([2, 1, 3], _.identity);
 
     assert.deepEqual(actual, expected);
   });
 
   QUnit.test( 'min 3 2 1', function( assert ) {
     var expected = 1,
-        actual = _.min([3, 2, 1], identity);
+        actual = _.min([3, 2, 1], _.identity);
 
     assert.deepEqual(actual, expected);
   });
 
   QUnit.test( 'min 3 1 2', function( assert ) {
     var expected = 1,
-        actual = _.min([3, 1, 2], identity);
+        actual = _.min([3, 1, 2], _.identity);
 
     assert.deepEqual(actual, expected);
   });
@@ -281,42 +321,42 @@
 
   QUnit.test( 'max 1 2 3', function( assert ) {
     var expected = 3,
-        actual = _.max([1, 2, 3], identity);
+        actual = _.max([1, 2, 3], _.identity);
 
     assert.deepEqual(actual, expected);
   });
 
   QUnit.test( 'max 1 3 2', function( assert ) {
     var expected = 3,
-        actual = _.max([1, 3, 2], identity);
+        actual = _.max([1, 3, 2], _.identity);
 
     assert.deepEqual(actual, expected);
   });
 
   QUnit.test( 'max 2 3 1', function( assert ) {
     var expected = 3,
-        actual = _.max([2, 3, 1], identity);
+        actual = _.max([2, 3, 1], _.identity);
 
     assert.deepEqual(actual, expected);
   });
 
   QUnit.test( 'max 2 1 3', function( assert ) {
     var expected = 3,
-        actual = _.max([2, 1, 3], identity);
+        actual = _.max([2, 1, 3], _.identity);
 
     assert.deepEqual(actual, expected);
   });
 
   QUnit.test( 'max 3 2 1', function( assert ) {
     var expected = 3,
-        actual = _.max([3, 2, 1], identity);
+        actual = _.max([3, 2, 1], _.identity);
 
     assert.deepEqual(actual, expected);
   });
 
   QUnit.test( 'max 3 1 2', function( assert ) {
     var expected = 3,
-        actual = _.max([3, 1, 2], identity);
+        actual = _.max([3, 1, 2], _.identity);
 
     assert.deepEqual(actual, expected);
   });
@@ -343,8 +383,19 @@
     assert.deepEqual(actual, expected);
   }); 
 
-  /* Implementation */
+  QUnit.module('identity');
 
-  function identity(i) { return i; }
+  QUnit.test( 'identity primitive', function( assert ) {
+    var expected = 1,
+        actual = _.identity(expected);
 
+    assert.equal(actual, expected);
+  });
+
+  QUnit.test( 'identity function', function( assert ) {
+    var expected = function () {},
+        actual = _.identity(expected);
+
+    assert.equal(actual, expected);
+  });  
 }).call(this, this._, this.QUnit);

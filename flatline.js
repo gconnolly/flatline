@@ -33,6 +33,10 @@
       return previousValue;
     }, []);
   };
+
+  _.compact = function (obj) {
+    return _.filter(obj, _.identity);
+  };
    
   _.some = _.any = function (obj, callback, context) {
     return obj.reduce(function (previousValue, currentValue) {
@@ -67,19 +71,31 @@
       return previousValue;
     }, [[],[]]);
   };
-   
-  _.groupBy = function(obj, callback, context) {
-    return obj.reduce(function (previousValue, currentValue) {
-      var result = typeof callback == 'function' 
-            ? callback.call(context, currentValue) 
-            : currentValue[callback];
 
-      previousValue[result] 
-        ? previousValue[result].splice(previousValue[result].length, 0, currentValue )
-        : (previousValue[result] = [ currentValue ]);
-      return previousValue;
-    }, {});
-  };
+  var group = function (behavior) {
+    return function(obj, callback, context) {
+      return obj.reduce(function (previousValue, currentValue) {
+        var key = typeof callback == 'function' 
+              ? callback.call(context, currentValue) 
+              : currentValue[callback];
+
+        behavior( previousValue, currentValue, key );
+        return previousValue;
+      }, {});
+    };
+  };  
+
+  _.groupBy = group(function (result, value, key) {
+    result[key] ? result[key].splice(result[key].length, 0, value ) : (result[key] = [ value ]);
+  });
+
+  _.countBy = group(function (result, value, key) {
+    result[key] ? result[key]++ : result[key] = 1;
+  });
+
+  _.indexBy = group(function (result, value, key) {
+    result[key] = value;
+  }); 
   
   _.flatten = function (obj, shallow) {
     return flatten([], obj, shallow);
@@ -111,9 +127,9 @@
   _.max = function (obj, callback, context) {
     return obj.reduce(function (previousValue, currentValue, index) {
       var challenger = callback.call(context, currentValue),
-          currentMin = index != 1 ? previousValue : callback.call(context, previousValue);
+          currentMax = index != 1 ? previousValue : callback.call(context, previousValue);
 
-      return previousValue > challenger ? previousValue : challenger;
+      return currentMax > challenger ? currentMax : challenger;
     });
   };
 
@@ -127,9 +143,13 @@
     }, []);
   };
 
+  _.identity = function (i) {
+    return i;
+  };
+
   /* Implementation */
 
-  function flatten(result, obj, shallow, recursive) {
+  var flatten = function (result, obj, shallow, recursive) {
     return obj.reduce(function (outerPreviousValue, outerCurrentValue) {
       isArrayLike(outerCurrentValue) && (!shallow || !recursive)
         ? flatten(outerPreviousValue, outerCurrentValue, shallow, true) 
@@ -137,15 +157,17 @@
 
       return outerPreviousValue;
     }, result);
-  }
+  };
 
-  function isArrayLike(obj) {
+  var isArrayLike = function (obj) {
     return obj 
           && typeof obj.reduce == 'function'
           && typeof obj.splice == 'function' 
           && typeof obj.length == 'number' 
           && obj.length >= 0;
-  }
+  };
+
+
   
   root._ = _;
 }).call(this);

@@ -17,15 +17,18 @@ The objectives is to clearly demonstrate the flexibility of [`Array.prototype.re
 - map, collect
 - forEach, each
 - filter, select
+- compact
 - some, any
 - all, every
 - first, head, take
 - rest, tail, drop
 - groupBy
+- countBy
+- indexBy
 - partition
 - flatten
 - reverse
-- min
-- max
+- min, max
 - invoke
 - slice
+- identity
