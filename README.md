@@ -17,6 +17,8 @@ The objectives is to clearly demonstrate the flexibility of [`Array.prototype.re
 - map, collect
 - forEach, each
 - filter, select
+- reject
+- contains, includes, include
 - compact
 - some, any
 - all, every
@@ -31,4 +33,5 @@ The objectives is to clearly demonstrate the flexibility of [`Array.prototype.re
 - min, max
 - invoke
 - slice
+- negate
 - identity
