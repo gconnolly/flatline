@@ -34,6 +34,10 @@
     }, []);
   };
 
+  _.reject = function(obj, predicate, context) {
+    return _.filter(obj, _.negate(predicate), context);
+  };  
+
   _.compact = function (obj) {
     return _.filter(obj, _.identity);
   };
@@ -49,6 +53,13 @@
       return previousValue && callback.call(context, currentValue);
     }, true);
   };
+
+  _.contains = _.includes = _.include = function(obj, item, fromIndex, guard) {
+    if (typeof fromIndex != 'number' || guard) fromIndex = 0;
+    return obj.reduce(function (previousValue, currentValue) {
+      return previousValue || (item === currentValue);
+    }, false);
+  };  
    
   _.first = _.head = _.take = function (obj) {
     return obj.reduce(function (previousValue, currentValue, index) {
@@ -147,6 +158,12 @@
     return i;
   };
 
+  _.negate = function(predicate) {
+    return function() {
+      return !predicate.apply(this, arguments);
+    };
+  };  
+
   /* Implementation */
 
   var flatten = function (result, obj, shallow, recursive) {
@@ -166,8 +183,6 @@
           && typeof obj.length == 'number' 
           && obj.length >= 0;
   };
-
-
   
   root._ = _;
 }).call(this);

@@ -63,6 +63,25 @@
     assert.deepEqual(actual, expected);
   });
 
+  QUnit.module('reject');
+
+  QUnit.test( 'reject', function( assert ) {
+    var expected = [2, 3],
+        actual = _.reject([1, 2, 3], function (i) { return i <= 1;});
+
+    assert.deepEqual(actual, expected);
+  });
+
+  QUnit.test( 'reject with context', function( assert ) {
+    var context = {
+          val: 1
+        },
+        expected = [2, 3],
+        actual = _.reject([1, 2, 3], function (i) { return i <= this.val;}, context);
+
+    assert.deepEqual(actual, expected);
+  });  
+
   QUnit.module('compact');
 
   QUnit.test( 'compact', function( assert ) {
@@ -143,6 +162,20 @@
 
     assert.deepEqual(actual, expected);
   });    
+
+  QUnit.module('contains');
+
+  QUnit.test( 'true', function( assert ) {
+    var actual = _.contains([1, 2, 3], 3);
+
+    assert.ok(actual);
+  });
+
+  QUnit.test( 'false', function( assert ) {
+    var actual = _.contains([1, 2, 3], 4);
+
+    assert.ok(!actual);
+  }); 
 
   QUnit.module('first');
 
@@ -397,5 +430,23 @@
         actual = _.identity(expected);
 
     assert.equal(actual, expected);
-  });  
+  });
+
+  QUnit.module('negate');
+
+  QUnit.test( 'negate true', function( assert ) {
+    var funcUnderTest = function () { return true; },
+        expected = funcUnderTest(),
+        actual = _.negate(funcUnderTest)();
+
+    assert.equal(actual, !expected);
+  });
+
+  QUnit.test( 'negate false', function( assert ) {
+    var funcUnderTest = function () { return false; },
+        expected = funcUnderTest(),
+        actual = _.negate(funcUnderTest)();
+
+    assert.equal(actual, !expected);
+  });
 }).call(this, this._, this.QUnit);
