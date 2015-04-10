@@ -1,4 +1,4 @@
-# flatline.js
+# flatline\_Λ\_Λ\_Λ\_\_\_\_\_
 
 An experimental javascript utility library for array-like objects requiring only the limited interface:
 ```javascript
@@ -31,4 +31,7 @@ The objectives is to clearly demonstrate the flexibility of [`Array.prototype.re
 - min, max
 - invoke
 - slice
+<<<<<<< HEAD
 - identity
+=======
+>>>>>>> origin/master
