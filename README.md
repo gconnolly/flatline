@@ -35,3 +35,4 @@ The objectives is to clearly demonstrate the flexibility of [`Array.prototype.re
 - slice
 - negate
 - identity
+- toArray

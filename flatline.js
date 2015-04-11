@@ -20,7 +20,8 @@
     }, {});
   };
 
-  _.invoke = function (obj, method, args) {
+  _.invoke = function (obj, method) {
+    var args = _.toArray(arguments).splice( 2, arguments.length );
     return obj.reduce(function (previousValue, currentValue){
       previousValue.splice( previousValue.length, 0, currentValue[method].apply(currentValue, args) );
       return previousValue;
@@ -162,6 +163,10 @@
     return function() {
       return !predicate.apply(this, arguments);
     };
+  };
+
+  _.toArray = function(obj) {
+    return Array.apply(null, obj);
   };  
 
   /* Implementation */
@@ -183,6 +188,6 @@
           && typeof obj.length == 'number' 
           && obj.length >= 0;
   };
-  
+
   root._ = _;
 }).call(this);

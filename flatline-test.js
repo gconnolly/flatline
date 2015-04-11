@@ -401,7 +401,7 @@
         actual = _.invoke([
           { f: function (i) { return 1 + i; } }, 
           { f: function (i) { return 2 + i; } }, 
-          { f: function (i) { return 3 + i; } }], 'f', [ 1 ]);
+          { f: function (i) { return 3 + i; } }], 'f', 1 );
 
     assert.deepEqual(actual, expected);
   });
@@ -449,4 +449,15 @@
 
     assert.equal(actual, !expected);
   });
+
+
+  QUnit.module('toArray');
+
+  QUnit.test( 'toArray', function( assert ) {
+    var expected = [1, 2, 3],
+        actual = function () { return _.toArray(arguments); }(1, 2, 3);
+
+    assert.deepEqual(actual, expected);
+  });
+
 }).call(this, this._, this.QUnit);
