@@ -295,7 +295,7 @@
   QUnit.module('min');
 
   QUnit.test( 'min with function', function( assert ) {
-    var expected = 1,
+    var expected = { val: 1 },
         actual = _.min([{ val: 1 }, { val: 2 }, { val: 3 }], function (i) { return i.val; });
 
     assert.deepEqual(actual, expected);
@@ -346,7 +346,7 @@
   QUnit.module('max');
 
   QUnit.test( 'max with function', function( assert ) {
-    var expected = 3,
+    var expected = { val: 3 },
         actual = _.max([{ val: 1 }, { val: 2 }, { val: 3 }], function (i) { return i.val; });
 
     assert.deepEqual(actual, expected);
@@ -442,6 +442,13 @@
 
     assert.deepEqual(actual, expected);
   });
+
+  QUnit.test( 'unique sorted', function( assert ) {
+    var expected = [1, 2, 3, 4, 5, 6, 7, 8],
+        actual = _.unique([1, 2, 3, 3, 3, 3, 4, 4, 5, 6, 7, 7, 8, 8], true);
+
+    assert.deepEqual(actual, expected);
+  });  
 
   QUnit.module('identity');
 
