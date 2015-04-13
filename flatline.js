@@ -15,9 +15,11 @@
   };
    
   _.forEach = _.each = function (obj, callback, context) {
-    return obj.reduce(function (previousValue, currentValue){
+    obj.reduce(function (previousValue, currentValue){
       callback.call(context, currentValue);
     }, {});
+
+    return obj;
   };
 
   _.invoke = function (obj, method) {
@@ -60,6 +62,27 @@
     return obj.reduce(function (previousValue, currentValue) {
       return previousValue || (item === currentValue);
     }, false);
+  };
+
+  _.intersection = function (obj) {
+    var args = _.rest(_.toArray(arguments));
+
+    return _.filter(obj, function (element) {
+      return _.all(args, function (array) {
+        return _.contains(array, element);
+      });
+    });
+  };
+
+  _.uniq = _.unique = function (obj) {
+    return obj.reduce(function (previousValue, currentValue) {
+      _.contains(previousValue, currentValue) || previousValue.splice( previousValue.length, 0, currentValue );
+      return previousValue;
+    }, []);
+  };
+
+  _.union = function () {
+    return _.uniq(_.flatten(_.toArray(arguments), true));
   };  
    
   _.first = _.head = _.take = function (obj) {
@@ -74,7 +97,7 @@
       return previousValue;
     }, []);
   };
-   
+  
   _.partition = function(obj, predicate, context) {
     return obj.reduce(function (previousValue, currentValue) {
       (predicate.call(context, currentValue) 

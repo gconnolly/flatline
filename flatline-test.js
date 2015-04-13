@@ -416,6 +416,33 @@
     assert.deepEqual(actual, expected);
   }); 
 
+  QUnit.module('intersection');
+
+  QUnit.test( 'intersection', function( assert ) {
+    var expected = [2, 3, 4],
+        actual = _.intersection([1, 2, 3, 4], [2, 3, 4, 5], [1, 2, 3, 4, 5]);
+
+    assert.deepEqual(actual, expected);
+  });
+
+  QUnit.module('union');
+
+  QUnit.test( 'union', function( assert ) {
+    var expected = [1, 2, 3, 4, 5, 8, 9, 10],
+        actual = _.union([1, 2, 3, 4], [2, 3, 4, 5], [8, 9, 10]);
+
+    assert.deepEqual(actual, expected);
+  });
+
+  QUnit.module('unique');
+
+  QUnit.test( 'unique', function( assert ) {
+    var expected = [1, 2, 3],
+        actual = _.unique([1, 2, 3, 3, 3, 3, 2, 2, 1, 2, 1, 3, 2, 1]);
+
+    assert.deepEqual(actual, expected);
+  });
+
   QUnit.module('identity');
 
   QUnit.test( 'identity primitive', function( assert ) {
