@@ -1,9 +1,17 @@
 (function (_, QUnit) {
 
+  var PhonyArray = function (array) {
+    var innerArray = array;
+
+    this.reduce = function () {
+      return Array.prototype.reduce.apply(innerArray, arguments);
+    };
+  };
+
   QUnit.module('reduce');
 
   QUnit.test( 'reduce', function( assert ) {
-    var input = [1, 2, 3],
+    var input = new PhonyArray([1, 2, 3]),
         expected = [1, 3, 6];
 
     assert.expect(expected.length);
@@ -19,7 +27,7 @@
 
   QUnit.test( 'map', function( assert ) {
     var expected = [2, 3, 4],
-        actual = _.map([1, 2, 3], function (i) { return i + 1;});
+        actual = _.map(new PhonyArray([1, 2, 3]), function (i) { return i + 1;});
 
     assert.deepEqual(actual, expected);
   });
@@ -29,7 +37,7 @@
           val: 1
         },
         expected = [2, 3, 4],
-        actual = _.map([1, 2, 3], function (i) { return i + this.val;}, context);
+        actual = _.map(new PhonyArray([1, 2, 3]), function (i) { return i + this.val;}, context);
 
     assert.deepEqual(actual, expected);
   });  
@@ -41,14 +49,14 @@
 
     assert.expect(expected.length);
 
-    _.forEach([1, 2, 3], function (i) { assert.ok(i); });
+    _.forEach(new PhonyArray([1, 2, 3]), function (i) { assert.ok(i); });
   });
 
   QUnit.module('filter');
 
   QUnit.test( 'filter', function( assert ) {
     var expected = [2, 3],
-        actual = _.filter([1, 2, 3], function (i) { return i > 1;});
+        actual = _.filter(new PhonyArray([1, 2, 3]), function (i) { return i > 1;});
 
     assert.deepEqual(actual, expected);
   });
@@ -58,7 +66,7 @@
           val: 1
         },
         expected = [2, 3],
-        actual = _.filter([1, 2, 3], function (i) { return i > this.val;}, context);
+        actual = _.filter(new PhonyArray([1, 2, 3]), function (i) { return i > this.val;}, context);
 
     assert.deepEqual(actual, expected);
   });
@@ -67,7 +75,7 @@
 
   QUnit.test( 'reject', function( assert ) {
     var expected = [2, 3],
-        actual = _.reject([1, 2, 3], function (i) { return i <= 1;});
+        actual = _.reject(new PhonyArray([1, 2, 3]), function (i) { return i <= 1;});
 
     assert.deepEqual(actual, expected);
   });
@@ -77,7 +85,7 @@
           val: 1
         },
         expected = [2, 3],
-        actual = _.reject([1, 2, 3], function (i) { return i <= this.val;}, context);
+        actual = _.reject(new PhonyArray([1, 2, 3]), function (i) { return i <= this.val;}, context);
 
     assert.deepEqual(actual, expected);
   });  
@@ -86,7 +94,7 @@
 
   QUnit.test( 'compact', function( assert ) {
     var expected = [2, 3],
-        actual = _.compact([null, 2, undefined, 3, 0]);
+        actual = _.compact(new PhonyArray([null, 2, undefined, 3, 0]));
 
     assert.deepEqual(actual, expected);
   });  
@@ -95,7 +103,7 @@
 
   QUnit.test( 'true', function( assert ) {
     var expected = true,
-        actual = _.some([1, 2, 3], function (i) { return i === 2;});
+        actual = _.some(new PhonyArray([1, 2, 3]), function (i) { return i === 2;});
 
     assert.deepEqual(actual, expected);
   });
@@ -105,14 +113,14 @@
           val: 2
         },
         expected = true,
-        actual = _.some([1, 2, 3], function (i) { return i === this.val;}, context);
+        actual = _.some(new PhonyArray([1, 2, 3]), function (i) { return i === this.val;}, context);
 
     assert.deepEqual(actual, expected);
   });  
 
   QUnit.test( 'false', function( assert ) {
     var expected = false,
-        actual = _.some([1, 2, 3], function (i) { return i === 4;});
+        actual = _.some(new PhonyArray([1, 2, 3]), function (i) { return i === 4;});
 
     assert.deepEqual(actual, expected);
   });
@@ -122,7 +130,7 @@
           val: 4
         },
         expected = false,
-        actual = _.some([1, 2, 3], function (i) { return i === this.val;}, context);
+        actual = _.some(new PhonyArray([1, 2, 3]), function (i) { return i === this.val;}, context);
 
     assert.deepEqual(actual, expected);
   });  
@@ -131,7 +139,7 @@
 
   QUnit.test( 'true', function( assert ) {
     var expected = true,
-        actual = _.all([1, 1, 1], function (i) { return i === 1;});
+        actual = _.all(new PhonyArray([1, 1, 1]), function (i) { return i === 1;});
 
     assert.deepEqual(actual, expected);
   });
@@ -141,14 +149,14 @@
           val: 1
         },
         expected = true,
-        actual = _.all([1, 1, 1], function (i) { return i === this.val;}, context);
+        actual = _.all(new PhonyArray([1, 1, 1]), function (i) { return i === this.val;}, context);
 
     assert.deepEqual(actual, expected);
   });  
 
   QUnit.test( 'false', function( assert ) {
     var expected = false,
-        actual = _.all([1, 2, 3], function (i) { return i === 1;});
+        actual = _.all(new PhonyArray([1, 2, 3]), function (i) { return i === 1;});
 
     assert.deepEqual(actual, expected);
   });  
@@ -158,7 +166,7 @@
           val: 1
         },
         expected = false,
-        actual = _.all([1, 2, 3], function (i) { return i === this.val;}, context);
+        actual = _.all(new PhonyArray([1, 2, 3]), function (i) { return i === this.val;}, context);
 
     assert.deepEqual(actual, expected);
   });    
@@ -166,22 +174,38 @@
   QUnit.module('contains');
 
   QUnit.test( 'true', function( assert ) {
-    var actual = _.contains([1, 2, 3], 3);
+    var actual = _.contains(new PhonyArray([1, 2, 3]), 3);
 
     assert.ok(actual);
   });
 
   QUnit.test( 'false', function( assert ) {
-    var actual = _.contains([1, 2, 3], 4);
+    var actual = _.contains(new PhonyArray([1, 2, 3]), 4);
 
     assert.ok(!actual);
-  }); 
+  });
+
+  QUnit.module('find');
+
+  QUnit.test( 'find', function( assert ) {
+    var expected = 2,
+        actual = _.find(new PhonyArray([1, 2, 3]), function (i) { return i === expected; });
+
+    assert.equal(actual, expected);
+  });
+
+  QUnit.test( 'doesnt find', function( assert ) {
+    var expected = -1,
+        actual = _.find(new PhonyArray([1, 2, 3]), function (i) { return i === 4; });
+
+    assert.equal(actual, expected);
+  });   
 
   QUnit.module('first');
 
   QUnit.test( 'first', function( assert ) {
     var expected = 1,
-        actual = _.first([1, 2, 3]);
+        actual = _.first(new PhonyArray([1, 2, 3]));
 
     assert.deepEqual(actual, expected);
   });
@@ -190,7 +214,7 @@
 
   QUnit.test( 'rest', function( assert ) {
     var expected = [2, 3],
-        actual = _.rest([1, 2, 3]);
+        actual = _.rest(new PhonyArray([1, 2, 3]));
 
     assert.deepEqual(actual, expected);
   });
@@ -199,7 +223,7 @@
 
   QUnit.test( 'partition', function( assert ) {
     var expected = [[1, 2, 3], [4, 5, 6]],
-        actual = _.partition([1, 2, 3, 4, 5, 6], function (i) { return i <= 3; });
+        actual = _.partition(new PhonyArray([1, 2, 3, 4, 5, 6]), function (i) { return i <= 3; });
 
     assert.deepEqual(actual, expected);
   });
@@ -208,14 +232,14 @@
 
   QUnit.test( 'function', function( assert ) {
     var expected = { red: [{ color: 'red' }, { color: 'red' }], blue: [{ color: 'blue' }] },
-        actual = _.groupBy([{ color: 'red' }, { color: 'red' }, { color: 'blue' }], function (i) { return i.color; });
+        actual = _.groupBy(new PhonyArray([{ color: 'red' }, { color: 'red' }, { color: 'blue' }]), function (i) { return i.color; });
 
     assert.deepEqual(actual, expected);
   });
 
   QUnit.test( 'property', function( assert ) {
     var expected = { red: [{ color: 'red' }, { color: 'red' }], blue: [{ color: 'blue' }] },
-        actual = _.groupBy([{ color: 'red' }, { color: 'red' }, { color: 'blue' }], 'color');
+        actual = _.groupBy(new PhonyArray([{ color: 'red' }, { color: 'red' }, { color: 'blue' }]), 'color');
 
     assert.deepEqual(actual, expected);
   });   
@@ -224,14 +248,14 @@
 
   QUnit.test( 'function', function( assert ) {
     var expected = { red: 2, blue: 1 },
-        actual = _.countBy([{ color: 'red' }, { color: 'red' }, { color: 'blue' }], function (i) { return i.color; });
+        actual = _.countBy(new PhonyArray([{ color: 'red' }, { color: 'red' }, { color: 'blue' }]), function (i) { return i.color; });
 
     assert.deepEqual(actual, expected);
   });
 
   QUnit.test( 'property', function( assert ) {
     var expected = { red: 2, blue: 1 },
-        actual = _.countBy([{ color: 'red' }, { color: 'red' }, { color: 'blue' }], 'color');
+        actual = _.countBy(new PhonyArray([{ color: 'red' }, { color: 'red' }, { color: 'blue' }]), 'color');
 
     assert.deepEqual(actual, expected);
   });  
@@ -240,14 +264,14 @@
 
   QUnit.test( 'function', function( assert ) {
     var expected = { red: { color: 'red' }, blue: { color: 'blue' }, orange: { color: 'orange' } },
-        actual = _.indexBy([{ color: 'orange' }, { color: 'red' }, { color: 'blue' }], function (i) { return i.color; });
+        actual = _.indexBy(new PhonyArray([{ color: 'orange' }, { color: 'red' }, { color: 'blue' }]), function (i) { return i.color; });
 
     assert.deepEqual(actual, expected);
   });
 
   QUnit.test( 'property', function( assert ) {
     var expected = { red: { color: 'red' }, blue: { color: 'blue' }, orange: { color: 'orange' } },
-        actual = _.indexBy([{ color: 'orange' }, { color: 'red' }, { color: 'blue' }], 'color');
+        actual = _.indexBy(new PhonyArray([{ color: 'orange' }, { color: 'red' }, { color: 'blue' }]), 'color');
 
     assert.deepEqual(actual, expected);
   });  
@@ -256,14 +280,14 @@
 
   QUnit.test( 'flatten', function( assert ) {
     var expected = [1, 2, 3, 4, 5, 6],
-        actual = _.flatten([[[1, [2]]], 3, [[4], 5, 6]]);
+        actual = _.flatten(new PhonyArray([[[1, [2]]], 3, [[4], 5, 6]]));
 
     assert.deepEqual(actual, expected);
   });
 
   QUnit.test( 'flatten shallow', function( assert ) {
     var expected = [[1, [2]], 3, [4], 5, 6],
-        actual = _.flatten([[[1, [2]]], 3, [[4], 5, 6]], true);
+        actual = _.flatten(new PhonyArray([[[1, [2]]], 3, [[4], 5, 6]]), true);
 
     assert.deepEqual(actual, expected);
   });    
@@ -272,7 +296,7 @@
 
   QUnit.test( 'reverse', function( assert ) {
     var expected = [1, 2, 3, 4, 5, 6],
-        actual = _.reverse([6, 5, 4, 3, 2, 1]);
+        actual = _.reverse(new PhonyArray([6, 5, 4, 3, 2, 1]));
 
     assert.deepEqual(actual, expected);
   });
@@ -280,7 +304,7 @@
   QUnit.module('reduceRight');
 
   QUnit.test( 'reduceRight', function( assert ) {
-    var input = [1, 2, 3],
+    var input = new PhonyArray([1, 2, 3]),
         expected = [3, 5, 6];
 
     assert.expect(expected.length);
@@ -296,49 +320,49 @@
 
   QUnit.test( 'min with function', function( assert ) {
     var expected = { val: 1 },
-        actual = _.min([{ val: 1 }, { val: 2 }, { val: 3 }], function (i) { return i.val; });
+        actual = _.min(new PhonyArray([{ val: 1 }, { val: 2 }, { val: 3 }]), function (i) { return i.val; });
 
     assert.deepEqual(actual, expected);
   });
 
   QUnit.test( 'min 1 2 3', function( assert ) {
     var expected = 1,
-        actual = _.min([1, 2, 3], _.identity);
+        actual = _.min(new PhonyArray([1, 2, 3]), _.identity);
 
     assert.deepEqual(actual, expected);
   });
 
   QUnit.test( 'min 1 3 2', function( assert ) {
     var expected = 1,
-        actual = _.min([1, 3, 2], _.identity);
+        actual = _.min(new PhonyArray([1, 3, 2]), _.identity);
 
     assert.deepEqual(actual, expected);
   });
 
   QUnit.test( 'min 2 3 1', function( assert ) {
     var expected = 1,
-        actual = _.min([2, 3, 1], _.identity);
+        actual = _.min(new PhonyArray([2, 3, 1]), _.identity);
 
     assert.deepEqual(actual, expected);
   });
 
   QUnit.test( 'min 2 1 3', function( assert ) {
     var expected = 1,
-        actual = _.min([2, 1, 3], _.identity);
+        actual = _.min(new PhonyArray([2, 1, 3]), _.identity);
 
     assert.deepEqual(actual, expected);
   });
 
   QUnit.test( 'min 3 2 1', function( assert ) {
     var expected = 1,
-        actual = _.min([3, 2, 1], _.identity);
+        actual = _.min(new PhonyArray([3, 2, 1]), _.identity);
 
     assert.deepEqual(actual, expected);
   });
 
   QUnit.test( 'min 3 1 2', function( assert ) {
     var expected = 1,
-        actual = _.min([3, 1, 2], _.identity);
+        actual = _.min(new PhonyArray([3, 1, 2]), _.identity);
 
     assert.deepEqual(actual, expected);
   });
@@ -347,49 +371,49 @@
 
   QUnit.test( 'max with function', function( assert ) {
     var expected = { val: 3 },
-        actual = _.max([{ val: 1 }, { val: 2 }, { val: 3 }], function (i) { return i.val; });
+        actual = _.max(new PhonyArray([{ val: 1 }, { val: 2 }, { val: 3 }]), function (i) { return i.val; });
 
     assert.deepEqual(actual, expected);
   });
 
   QUnit.test( 'max 1 2 3', function( assert ) {
     var expected = 3,
-        actual = _.max([1, 2, 3], _.identity);
+        actual = _.max(new PhonyArray([1, 2, 3]), _.identity);
 
     assert.deepEqual(actual, expected);
   });
 
   QUnit.test( 'max 1 3 2', function( assert ) {
     var expected = 3,
-        actual = _.max([1, 3, 2], _.identity);
+        actual = _.max(new PhonyArray([1, 3, 2]), _.identity);
 
     assert.deepEqual(actual, expected);
   });
 
   QUnit.test( 'max 2 3 1', function( assert ) {
     var expected = 3,
-        actual = _.max([2, 3, 1], _.identity);
+        actual = _.max(new PhonyArray([2, 3, 1]), _.identity);
 
     assert.deepEqual(actual, expected);
   });
 
   QUnit.test( 'max 2 1 3', function( assert ) {
     var expected = 3,
-        actual = _.max([2, 1, 3], _.identity);
+        actual = _.max(new PhonyArray([2, 1, 3]), _.identity);
 
     assert.deepEqual(actual, expected);
   });
 
   QUnit.test( 'max 3 2 1', function( assert ) {
     var expected = 3,
-        actual = _.max([3, 2, 1], _.identity);
+        actual = _.max(new PhonyArray([3, 2, 1]), _.identity);
 
     assert.deepEqual(actual, expected);
   });
 
   QUnit.test( 'max 3 1 2', function( assert ) {
     var expected = 3,
-        actual = _.max([3, 1, 2], _.identity);
+        actual = _.max(new PhonyArray([3, 1, 2]), _.identity);
 
     assert.deepEqual(actual, expected);
   });
@@ -398,20 +422,20 @@
 
   QUnit.test( 'invoke with arguments', function( assert ) {
     var expected = [2, 3, 4],
-        actual = _.invoke([
+        actual = _.invoke(new PhonyArray([
           { f: function (i) { return 1 + i; } }, 
           { f: function (i) { return 2 + i; } }, 
-          { f: function (i) { return 3 + i; } }], 'f', 1 );
+          { f: function (i) { return 3 + i; } }]), 'f', 1 );
 
     assert.deepEqual(actual, expected);
   });
 
   QUnit.test( 'invoke', function( assert ) {
     var expected = [1, 2, 3],
-        actual = _.invoke([
+        actual = _.invoke(new PhonyArray([
           { f: function () { return 1; } }, 
           { f: function () { return 2; } }, 
-          { f: function () { return 3; } }], 'f');
+          { f: function () { return 3; } }]), 'f');
 
     assert.deepEqual(actual, expected);
   }); 
@@ -420,7 +444,7 @@
 
   QUnit.test( 'intersection', function( assert ) {
     var expected = [2, 3, 4],
-        actual = _.intersection([1, 2, 3, 4], [2, 3, 4, 5], [1, 2, 3, 4, 5]);
+        actual = _.intersection(new PhonyArray([1, 2, 3, 4]), new PhonyArray([2, 3, 4, 5]), new PhonyArray([1, 2, 3, 4, 5]));
 
     assert.deepEqual(actual, expected);
   });
@@ -429,7 +453,7 @@
 
   QUnit.test( 'union', function( assert ) {
     var expected = [1, 2, 3, 4, 5, 8, 9, 10],
-        actual = _.union([1, 2, 3, 4], [2, 3, 4, 5], [8, 9, 10]);
+        actual = _.union(new PhonyArray([1, 2, 3, 4]), new PhonyArray([2, 3, 4, 5]), new PhonyArray([8, 9, 10]));
 
     assert.deepEqual(actual, expected);
   });
@@ -438,14 +462,14 @@
 
   QUnit.test( 'unique', function( assert ) {
     var expected = [1, 2, 3],
-        actual = _.unique([1, 2, 3, 3, 3, 3, 2, 2, 1, 2, 1, 3, 2, 1]);
+        actual = _.unique(new PhonyArray([1, 2, 3, 3, 3, 3, 2, 2, 1, 2, 1, 3, 2, 1]));
 
     assert.deepEqual(actual, expected);
   });
 
   QUnit.test( 'unique sorted', function( assert ) {
     var expected = [1, 2, 3, 4, 5, 6, 7, 8],
-        actual = _.unique([1, 2, 3, 3, 3, 3, 4, 4, 5, 6, 7, 7, 8, 8], true);
+        actual = _.unique(new PhonyArray([1, 2, 3, 3, 3, 3, 4, 4, 5, 6, 7, 7, 8, 8]), true);
 
     assert.deepEqual(actual, expected);
   });  

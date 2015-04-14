@@ -1,4 +1,4 @@
-# flatline\_Λ\_Λ\_Λ\_\_\_\_\_
+# \_Λ\_Λ\_Λ\_\_\_\_\_flatline
 
 An experimental javascript utility library for array-like objects requiring only the limited interface:
 ```javascript
@@ -10,7 +10,7 @@ arrayLikeObject = {
 ```
 The objectives is to clearly demonstrate the flexibility of [`Array#reduce`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce) and then to a lesser extent... you know... be accurate and robust. That being said, there is a smattering of unit tests to back it up.
 
-### currently supported functions:
+### functions implemented using reduce:
 
 - reduce, foldl, inject 
 - reduceRight, foldr
@@ -22,6 +22,7 @@ The objectives is to clearly demonstrate the flexibility of [`Array#reduce`](htt
 - compact
 - some, any
 - all, every
+- find, detect
 - first, head, take
 - rest, tail, drop
 - groupBy
@@ -36,6 +37,9 @@ The objectives is to clearly demonstrate the flexibility of [`Array#reduce`](htt
 - unique, uniq
 - invoke
 - slice
+
+### functions implemented not using reduce
+
 - negate
 - identity
 - toArray

@@ -64,6 +64,18 @@
     }, false);
   };
 
+  _.find = _.detect = function(obj, predicate, context) {
+    var result;
+
+    _.forEach(obj, function (element) {
+      if(!result && predicate.call(context, element)) {
+        result = element;
+      }
+    });
+
+    return result || -1;
+  };
+
   _.intersection = function (obj) {
     var args = _.rest(_.toArray(arguments));
 
@@ -188,6 +200,11 @@
     }, []);
   };
 
+  /*  
+      These functions don't use reduce, but they are used in the implementation of 
+      other functions and they exists in lodash and underscore, so they are included.
+  */
+
   _.identity = function (i) {
     return i;
   };
@@ -215,11 +232,7 @@
   };
 
   var isArrayLike = function (obj) {
-    return obj 
-          && typeof obj.reduce == 'function'
-          && typeof obj.splice == 'function' 
-          && typeof obj.length == 'number' 
-          && obj.length >= 0;
+    return obj && typeof obj.reduce == 'function';
   };
 
   root._ = _;
