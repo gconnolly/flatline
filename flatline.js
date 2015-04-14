@@ -74,11 +74,21 @@
     });
   };
 
-  _.uniq = _.unique = function (obj) {
-    return obj.reduce(function (previousValue, currentValue) {
-      _.contains(previousValue, currentValue) || previousValue.splice( previousValue.length, 0, currentValue );
-      return previousValue;
-    }, []);
+  _.uniq = _.unique = function (obj, isSorted, callback, context) {
+    var previous,
+        seen = [];    
+
+    return _.filter(obj, function (value) {
+      var computed = callback ? callback.call(value, context) : value,
+          result = (isSorted && computed !== previous) || (!isSorted && !_.contains(seen, computed));
+
+      if(result) {
+        previous = computed;
+        seen.splice( seen.length, 0, computed );
+      }
+
+      return result;
+    }, context);
   };
 
   _.union = function () {
@@ -152,19 +162,19 @@
 
   _.min = function (obj, callback, context) {
     return obj.reduce(function (previousValue, currentValue, index) {
-      var challenger = callback.call(context, currentValue),
-          currentMin = index != 1 ? previousValue : callback.call(context, previousValue);
+      var computed = callback.call(context, currentValue),
+          currentMin = callback.call(context, previousValue);
 
-      return currentMin < challenger ? currentMin : challenger;
+      return currentMin < computed ? previousValue : currentValue;
     });
   };
 
   _.max = function (obj, callback, context) {
     return obj.reduce(function (previousValue, currentValue, index) {
-      var challenger = callback.call(context, currentValue),
-          currentMax = index != 1 ? previousValue : callback.call(context, previousValue);
+      var computed = callback.call(context, currentValue),
+          currentMax = callback.call(context, previousValue);
 
-      return currentMax > challenger ? currentMax : challenger;
+      return currentMax > computed ? previousValue : currentValue;
     });
   };
 
