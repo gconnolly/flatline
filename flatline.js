@@ -1,8 +1,20 @@
 (function () {
-  var root = this;
+  var root = this,
+      _ = function () {},
+      createArray = function ( ) {
+        return Array.apply(null, arguments);
+      };
+
+  /* CONFIGURATION */
+
+  // set a function that will create the array-like objects
+  // to be used. the native array is set by default.
+  _.setArrayCreator = function (callback) {
+    createArray = callback;
+  };
   
-  var _ = function () {};
-  
+  /* UTILITY FUNCTIONS */
+
   _.reduce = _.foldl = _.inject = function (obj, callback, initialValue, context) {
     return obj.reduce(callback.bind(context), initialValue);
   };
@@ -11,7 +23,7 @@
     return obj.reduce(function (previousValue, currentValue) {
       previousValue.splice(previousValue.length, 0, callback.call(context, currentValue));
       return previousValue;
-    }, []);
+    }, createArray());
   };
    
   _.forEach = _.each = function (obj, callback, context) {
@@ -27,14 +39,14 @@
     return obj.reduce(function (previousValue, currentValue){
       previousValue.splice( previousValue.length, 0, currentValue[method].apply(currentValue, args) );
       return previousValue;
-    }, []);
+    }, createArray());
   };  
    
   _.filter = _.select = function (obj, callback, context) {
     return obj.reduce(function (previousValue, currentValue) {
       !callback.call(context, currentValue) || previousValue.splice( previousValue.length, 0, currentValue );
       return previousValue;
-    }, []);
+    }, createArray());
   };
 
   _.reject = function(obj, predicate, context) {
@@ -88,7 +100,7 @@
 
   _.uniq = _.unique = function (obj, isSorted, callback, context) {
     var previous,
-        seen = [];    
+        seen = createArray();    
 
     return _.filter(obj, function (value) {
       var computed = callback ? callback.call(value, context) : value,
@@ -117,16 +129,20 @@
     return obj.reduce(function (previousValue, currentValue, index) {
       !index || previousValue.splice(previousValue.length, 0, currentValue );
       return previousValue;
-    }, []);
+    }, createArray());
   };
   
   _.partition = function(obj, predicate, context) {
-    return obj.reduce(function (previousValue, currentValue) {
-      (predicate.call(context, currentValue) 
-        ? previousValue[0] 
-        : previousValue[1]).splice(previousValue.length, 0, currentValue );
-      return previousValue;
-    }, [[],[]]);
+    var firstPartition = createArray(),
+        secondPartition = createArray();
+
+    _.forEach(obj, function (element) {
+      predicate.call(context, element) 
+        ? firstPartition.splice(firstPartition.length, 0, element ) 
+        : secondPartition.splice(secondPartition.length, 0, element );
+    });
+
+    return createArray(firstPartition, secondPartition);
   };
 
   var group = function (behavior) {
@@ -143,7 +159,7 @@
   };  
 
   _.groupBy = group(function (result, value, key) {
-    result[key] ? result[key].splice(result[key].length, 0, value ) : (result[key] = [ value ]);
+    result[key] ? result[key].splice(result[key].length, 0, value ) : (result[key] = createArray( value ));
   });
 
   _.countBy = group(function (result, value, key) {
@@ -155,21 +171,21 @@
   }); 
   
   _.flatten = function (obj, shallow) {
-    return flatten([], obj, shallow);
+    return flatten(createArray(), obj, shallow);
   };
    
   _.reverse = function(obj) {
     return obj.reduce(function (previousValue, currentValue) {
       previousValue.splice(0, 0, currentValue);
       return previousValue;
-    }, []);
+    }, createArray());
   };
    
   _.reduceRight = function(obj, callback, initialValue, context) {
     return obj.reduce(function (previousValue, currentValue) {
       previousValue.splice(0, 0, currentValue);
       return previousValue;
-    }, []).reduce(callback.bind(context), initialValue);
+    }, createArray()).reduce(callback.bind(context), initialValue);
   };
 
   _.min = function (obj, callback, context) {
@@ -197,12 +213,13 @@
       }
 
       return previousValue;
-    }, []);
+    }, createArray());
   };
 
   /*  
       These functions don't use reduce, but they are used in the implementation of 
-      other functions and they exists in lodash and underscore, so they are included.
+      other utility functions and since they exists in lodash and underscore
+      we will allow access to them.
   */
 
   _.identity = function (i) {
@@ -219,7 +236,7 @@
     return Array.apply(null, obj);
   };  
 
-  /* Implementation */
+  /* IMPLEMENTATION */
 
   var flatten = function (result, obj, shallow, recursive) {
     return obj.reduce(function (outerPreviousValue, outerCurrentValue) {
@@ -232,6 +249,11 @@
   };
 
   var isArrayLike = function (obj) {
+    return obj 
+          && typeof obj.reduce == 'function'
+          && typeof obj.splice == 'function' 
+          && typeof obj.length == 'number' 
+          && obj.length >= 0;
     return obj && typeof obj.reduce == 'function';
   };
 

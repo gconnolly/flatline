@@ -3,8 +3,12 @@
 An experimental javascript utility library for array-like objects requiring only the limited interface:
 ```javascript
 arrayLikeObject = {
+  /* iteration */
   reduce: function (callback[, initialValue]) {},
-  splice: function (start, deleteCount[, item1[, item2[, ...]]]) {}, 
+
+  /* mutation */
+  splice: function (start, deleteCount[, item1[, item2[, ...]]]) {},
+
   length: 0
 }
 ```
