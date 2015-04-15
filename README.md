@@ -1,16 +1,16 @@
 # \_Λ\_Λ\_Λ\_\_\_\_\_flatline
 
-An experimental javascript utility library for array-like objects requiring only the limited interface:
+An experimental javascript utility library for array-like objects requiring a very limited interface:
 ```javascript
-arrayLikeObject = {
+var ArrayLike = function () {
+  this.length = 0;
+
   /* iteration */
-  reduce: function (callback[, initialValue]) {},
+  this.reduce = function (callback[, initialValue]) {};
 
   /* mutation */
-  splice: function (start, deleteCount[, item1[, item2[, ...]]]) {},
-
-  length: 0
-}
+  this.splice = function (start, deleteCount[, item1[, item2[, ...]]]) {};
+};
 ```
 The objectives is to clearly demonstrate the flexibility of [`Array#reduce`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce) and then to a lesser extent... you know... be accurate and robust. That being said, there is a smattering of unit tests to back it up.
 
