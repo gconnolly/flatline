@@ -12,7 +12,7 @@ var ArrayLike = function () {
   this.splice = function (start, deleteCount[, item1[, item2[, ...]]]) {};
 };
 ```
-The objectives is to clearly demonstrate the flexibility of [`Array#reduce`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce) and then to a lesser extent... you know... be accurate and robust. That being said, there is a smattering of unit tests to back it up.
+The objectives is to clearly demonstrate the flexibility of [`Array#reduce`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce), [`Array#splice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Splice) and then to a lesser extent... you know... be accurate and robust. That being said, there is a smattering of unit tests to back it up.
 
 ### functions implemented using reduce:
 
