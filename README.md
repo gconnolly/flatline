@@ -27,6 +27,7 @@ The objectives is to clearly demonstrate the flexibility of [`Array#reduce`](htt
 - some, any
 - all, every
 - find, detect
+- findIndex
 - first, head, take
 - rest, tail, drop
 - groupBy
@@ -34,6 +35,8 @@ The objectives is to clearly demonstrate the flexibility of [`Array#reduce`](htt
 - indexBy
 - partition
 - flatten
+- shuffle
+- sample
 - reverse
 - min, max
 - intersection
@@ -44,6 +47,7 @@ The objectives is to clearly demonstrate the flexibility of [`Array#reduce`](htt
 
 ### functions implemented not using reduce
 
+- random
 - negate
 - identity
 - toArray

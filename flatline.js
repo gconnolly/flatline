@@ -88,6 +88,16 @@
     return result || -1;
   };
 
+  _.findIndex = function(obj, predicate, context) {
+    return obj.reduce(function (previousValue, currentValue, index){
+      if(previousValue < 0 && predicate.call(context, currentValue)) {
+        previousValue = index;
+      }
+
+      return previousValue;
+    }, -1);
+  };  
+
   _.intersection = function (obj) {
     var args = _.rest(_.toArray(arguments));
 
@@ -144,6 +154,23 @@
 
     return createArray(firstPartition, secondPartition);
   };
+
+  _.shuffle = function (obj) {
+    return obj.reduce(function (previousValue, currentValue, index) {
+      var rand = _.random(0, index);
+      if (rand !== index) previousValue.splice(index, 1, getAtIndex(previousValue, rand));
+      previousValue.splice(rand, 1, currentValue);
+
+      return previousValue;
+    }, createArray.apply(null, obj));
+  };
+
+  _.sample = function(obj, n, guard) {
+    if (n == null || guard) {
+      return obj[_.random(obj.length - 1)];
+    }
+    return _.slice(_.shuffle(obj), 0, Math.max(0, n));
+  };  
 
   var group = function (behavior) {
     return function(obj, callback, context) {
@@ -208,7 +235,7 @@
 
   _.slice = function (obj, begin, end) {
     return obj.reduce(function (previousValue, currentValue, index) {
-      if((index >= (begin || 0)) && (index < end || obj.length)) {
+      if((index >= (begin || 0)) && (index < (end || obj.length))) {
         previousValue.splice( previousValue.length, 0, currentValue );
       }
 
@@ -234,7 +261,15 @@
 
   _.toArray = function(obj) {
     return Array.apply(null, obj);
-  };  
+  };
+
+  _.random = function(min, max) {
+    if (max == null) {
+      max = min;
+      min = 0;
+    }
+    return min + Math.floor(Math.random() * (max - min + 1));
+  };
 
   /* IMPLEMENTATION */
 
@@ -255,6 +290,16 @@
           && typeof obj.length == 'number' 
           && obj.length >= 0;
     return obj && typeof obj.reduce == 'function';
+  };
+
+  //yuk! use this as little as possible
+  var getAtIndex = function (obj, index) {
+    if(index >= obj.length || index < 0) return;
+
+    var result = obj.splice(index, 1)[0];
+    obj.splice(index, 0, result);
+
+    return result;
   };
 
   root._ = _;
