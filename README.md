@@ -1,6 +1,6 @@
 # \_Λ\_Λ\_Λ\_\_\_\_\_flatline
 
-An experimental javascript utility library for array-like objects requiring a very limited interface:
+An conceptual javascript utility library for array-like objects requiring a very limited interface:
 ```javascript
 var ArrayLike = function () {
   this.length = 0;
