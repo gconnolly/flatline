@@ -4,20 +4,18 @@
   var PhonyArray = function (array) {
       var innerArray = array || [];
 
-      this.length = innerArray.length;
+      Object.defineProperty(this, 'length', {
+        get: function () {
+          return innerArray.length;
+        }
+      });
 
       this.reduce = function () {
-        var result = Array.prototype.reduce.apply(innerArray, arguments);
-        this.length = innerArray.length;
-
-        return result;
+        return Array.prototype.reduce.apply(innerArray, arguments);
       };
 
       this.splice = function () {
-        var result = Array.prototype.splice.apply(innerArray, arguments);
-        this.length = innerArray.length;
-
-        return result;
+        return Array.prototype.splice.apply(innerArray, arguments);
       };
 
       this.unwrap = function () {
