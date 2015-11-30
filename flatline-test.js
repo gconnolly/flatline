@@ -483,7 +483,16 @@
         actual = _.unique(new PhonyArray([1, 2, 3, 3, 3, 3, 4, 4, 5, 6, 7, 7, 8, 8]), true);
 
     assert.deepEqual(actual.unwrap(), expected);
-  });  
+  });
+
+  QUnit.module('pluck');
+
+  QUnit.test( 'pluck', function( assert ) {
+    var expected = [1, 2, 3],
+        actual = _.pluck(new PhonyArray([{ a: 1 }, { a: 2 }, { a: 3 }]), 'a');
+
+    assert.deepEqual(actual.unwrap(), expected);
+  });
 
   QUnit.module('identity');
 

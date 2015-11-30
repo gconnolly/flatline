@@ -243,6 +243,12 @@
     }, createArray());
   };
 
+  _.pluck = function (obj, key) {
+    return _.map(obj, function(value) {
+      return value == null ? undefined : value[key];
+    });
+  };
+
   /*  
       These functions don't use reduce, but they are used in the implementation of 
       other utility functions and since they exists in lodash and underscore
